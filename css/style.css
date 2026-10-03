@@ -474,6 +474,34 @@ main{ position:relative; z-index:3; max-width:1240px; margin:0 auto; padding:2re
 .login-msg.is-ok{ color:var(--green); }
 
 /* ==========================================================================
+   MOBILE REFINEMENTS
+   ========================================================================== */
+@media (max-width:560px){
+  main{ padding:1.4rem 1rem 3rem; gap:1.6rem; }
+  .panel{ padding:1.2rem 1.1rem 1.4rem; }
+  .hud-strip{ gap:.8rem; padding:.7rem 1rem; }
+  .strip-item{ font-size:.68rem; }
+  .hud-inner{ padding:1.3rem 1.1rem 1rem; }
+
+  /* Linhas de missão (regras, kit, vídeos, drawer): o texto fica em cima,
+     e os controles (link do YouTube, tag de XP) descem pra uma linha
+     própria, em vez de ficarem espremidos ao lado do texto. */
+  .quest-row{ flex-wrap:wrap; row-gap:.5rem; }
+  .quest-row label{ flex-basis:100%; }
+  .quest-row .yt-link,
+  .quest-row .xp-tag{ margin-left:2.05rem; }
+
+  .briefing-grid{ grid-template-columns:1fr 1fr; }
+  .treino-week{ grid-template-columns:repeat(2, 1fr); }
+  .drawer-head h2{ font-size:1.05rem; }
+}
+
+@media (max-width:380px){
+  .briefing-grid{ grid-template-columns:1fr; }
+  .tdigit{ min-width:40px; padding:.3rem .4rem; }
+}
+
+/* ==========================================================================
    REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce){
