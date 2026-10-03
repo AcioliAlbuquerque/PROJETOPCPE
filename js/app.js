@@ -212,11 +212,20 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
   /* ESTADO / STORAGE                                                    */
   /* ------------------------------------------------------------------ */
 
-  const STORAGE_KEY = "pcpe-agente-quest-save-v1";
+  // A chave de cache local inclui o UID do usuário logado, pra que duas
+  // pessoas usando o mesmo navegador/computador nunca leiam ou herdem o
+  // cache uma da outra — cada conta tem sua própria "gaveta" local.
+  const STORAGE_KEY_BASE = "pcpe-agente-quest-save-v1";
+
+  function storageKeyForUser(){
+    return currentUser ? (STORAGE_KEY_BASE + ":" + currentUser.uid) : null;
+  }
 
   function loadState(){
+    const key = storageKeyForUser();
+    if(!key) return { completed:{}, streak:{ count:0, lastDate:null } };
     try{
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(key);
       if(!raw) return { completed:{}, streak:{ count:0, lastDate:null } };
       const parsed = JSON.parse(raw);
       return {
@@ -229,10 +238,13 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
     }
   }
 
-  let state = loadState();
+  // Estado vazio até sabermos quem está logado — só depois do login
+  // carregamos o cache (namespaced) e, em seguida, a nuvem.
+  let state = { completed:{}, streak:{ count:0, lastDate:null } };
 
   function saveState(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const key = storageKeyForUser();
+    if(key) localStorage.setItem(key, JSON.stringify(state));
     queueCloudSync();
   }
 
@@ -682,6 +694,7 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
         return;
       }
       currentUser = user;
+      state = loadState();
       await loadStateFromCloud();
       renderUserBadge();
       init();
