@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPERAÇÃO PCPE // Agente de Polícia</title>
+<meta name="description" content="Painel de missões gamificado para o cronograma de estudos e treinos TAF — Concurso PCPE 2026/2027, cargo Agente de Polícia.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23070a10'/%3E%3Cpath d='M4 18l4-12 4 8 4-8 4 12' stroke='%2300e5ff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+<div class="scan-overlay" aria-hidden="true"></div>
+
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<!-- ============ HUD HEADER ============ -->
+<header class="hud">
+  <div class="hud-inner">
+    <div class="hud-brand">
+      <span class="hud-tag">AGENTE DE POLÍCIA · PCPE</span>
+      <h1 class="hud-title">OPERAÇÃO<span>PCPE</span></h1>
+      <span class="hud-sub">Pernambuco — Edital 2026/2027</span>
+    </div>
+
+    <div class="hud-player" id="hudPlayer">
+      <div class="player-rank">
+        <span class="level-badge" id="levelBadge">LV 1</span>
+        <div class="player-rank-text">
+          <strong id="rankName">Recruta</strong>
+          <span id="xpLabel">0 / 150 XP</span>
+        </div>
+      </div>
+      <div class="xp-track" role="progressbar" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" id="xpBarWrap">
+        <div class="xp-fill" id="xpBar"></div>
+      </div>
+    </div>
+
+    <div class="hud-timer">
+      <span class="hud-tag">CONTAGEM REGRESSIVA · BOSS FINAL</span>
+      <div class="timer-digits" id="countdown">
+        <div class="tdigit"><strong id="cdDays">--</strong><small>dias</small></div>
+        <div class="tdigit"><strong id="cdHours">--</strong><small>h</small></div>
+        <div class="tdigit"><strong id="cdMins">--</strong><small>min</small></div>
+        <div class="tdigit"><strong id="cdSecs">--</strong><small>s</small></div>
+      </div>
+      <span class="hud-sub">07/03/2027 · turno da tarde</span>
+    </div>
+  </div>
+
+  <div class="hud-strip">
+    <div class="strip-item">
+      <span>Progresso da campanha</span>
+      <div class="mini-bar"><div class="mini-fill" id="campaignBar"></div></div>
+      <strong id="campaignPct">0%</strong>
+    </div>
+    <div class="strip-item">
+      <span>Missões concluídas</span>
+      <div class="mini-bar"><div class="mini-fill mini-fill--purple" id="questBar"></div></div>
+      <strong id="questPct">0 / 0</strong>
+    </div>
+    <div class="strip-item strip-item--streak">
+      <span>Sequência de estudo</span>
+      <strong id="streakCount">🔥 0 dias</strong>
+    </div>
+    <div class="strip-item strip-item--user" id="userBadge" hidden>
+      <span>Operador(a)</span>
+      <strong id="userEmailLabel">—</strong>
+    </div>
+    <a class="btn-ghost btn-jump" href="#treinoTitle" title="Ir direto para o plano de treino TAF">🏋️ Treino TAF</a>
+    <button class="btn-ghost" id="resetBtn" title="Zerar todo o progresso salvo">↺ Reiniciar save</button>
+    <button class="btn-ghost" id="exportBtn" title="Baixar o progresso em .json">⇩ Exportar</button>
+    <label class="btn-ghost btn-file" title="Carregar um progresso salvo (.json)">
+      ⇧ Importar
+      <input type="file" id="importInput" accept="application/json" hidden>
+    </label>
+    <button class="btn-ghost" id="logoutBtn" title="Sair da conta">⏻ Sair</button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ BRIEFING ============ -->
+  <section class="panel briefing" aria-labelledby="briefingTitle">
+    <h2 id="briefingTitle"><span class="idx">BRIEFING</span> Parâmetros do concurso</h2>
+    <div class="briefing-grid">
+      <div class="stat-card">
+        <span class="stat-label">P1 — Noções de Direito</span>
+        <strong>20 questões</strong>
+        <span class="stat-note">eliminatório e classificatório</span>
+      </div>
+      <div class="stat-card stat-card--accent">
+        <span class="stat-label">P2 — Conhecimentos Específicos</span>
+        <strong>40 questões</strong>
+        <span class="stat-note">eliminatório e classificatório</span>
+      </div>
+      <div class="stat-card stat-card--danger">
+        <span class="stat-label">Nota mínima (P1+P2)</span>
+        <strong>30,00 / 60,00</strong>
+        <span class="stat-note">menos de 50% elimina</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">P3 — Redação</span>
+        <strong>1 texto</strong>
+        <span class="stat-note">atualidades em segurança pública</span>
+      </div>
+    </div>
+    <p class="briefing-note">Múltipla escolha com <strong>5 alternativas</strong> (A–E) — não é o Certo/Errado clássico do Cebraspe, então treine questões nesse formato específico. A nota mínima é sobre a <strong>soma de P1+P2</strong>; não há regra de zerar uma prova individualmente no edital.</p>
+
+    <div class="strategy-alert">
+      <strong>🏋️ TAF — eliminatório por apto/inapto, não por nota</strong>
+      <p>4 testes em sequência obrigatória (intervalo mínimo de 5min entre eles): <strong>barra dinâmica</strong> (mínimo 3 repetições, pegada livre, sem kipping), <strong>salto horizontal</strong> (mín. 1,65m), <strong>natação 50m</strong> (máx. 70s) e <strong>corrida de 12 minutos</strong> (mín. 2.200m). Você já domina natação e salto — o treino físico deste cronograma foca pesado em barra e corrida, mantendo os outros dois só em manutenção semanal.</p>
+    </div>
+  </section>
+
+  <!-- ============ CLASSES / DISCIPLINAS ============ -->
+  <section class="panel classes" aria-labelledby="classesTitle">
+    <h2 id="classesTitle"><span class="idx">STATUS</span> Árvore de classes</h2>
+    <div class="classes-grid">
+      <div class="class-group">
+        <h3>P1 <span>· Noções de Direito · 20 questões</span></h3>
+        <div class="bars" id="barsP1"></div>
+      </div>
+      <div class="class-group">
+        <h3>P2 <span>· Específicos + Redação · 40 questões</span></h3>
+        <div class="bars" id="barsP2"></div>
+      </div>
+      <div class="class-group">
+        <h3>TAF <span>· aptidão física · apto/inapto</span></h3>
+        <div class="bars" id="barsTAF"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORLD MAP ============ -->
+  <section class="panel worldmap" aria-labelledby="mapTitle">
+    <h2 id="mapTitle"><span class="idx">MAPA</span> Trilha de missões — 5 fases até a prova</h2>
+    <p class="section-hint">Toque em um nó para abrir o log de missões daquela fase. O anel ao redor mostra o quanto da fase já foi concluído.</p>
+    <div class="map-path" id="mapPath"></div>
+  </section>
+
+  <!-- ============ TAF TRAINING PLAN (STATIC REFERENCE) ============ -->
+  <section class="panel treino" aria-labelledby="treinoTitle">
+    <h2 id="treinoTitle"><span class="idx">TAF</span> Plano de treino — barra e corrida</h2>
+    <p class="section-hint">Seg–sáb, 1h/dia. Domingo é descanso físico. Progressão baseada na fase atual do cronograma (veja o mapa acima).</p>
+
+    <div class="treino-week">
+      <div class="treino-day"><strong>Seg</strong><span>Barra — técnica/força</span></div>
+      <div class="treino-day"><strong>Ter</strong><span>Corrida</span></div>
+      <div class="treino-day"><strong>Qua</strong><span>Barra — variação</span></div>
+      <div class="treino-day"><strong>Qui</strong><span>Corrida</span></div>
+      <div class="treino-day"><strong>Sex</strong><span>Barra + salto</span></div>
+      <div class="treino-day"><strong>Sáb</strong><span>Corrida longa + natação</span></div>
+      <div class="treino-day is-rest"><strong>Dom</strong><span>Descanso</span></div>
+    </div>
+
+    <div class="routine-grid">
+      <div class="routine-card">
+        <h3>🪢 Progressão da barra (meta: 3 repetições dinâmicas)</h3>
+        <ol>
+          <li><strong>Fase 1 (base):</strong> negativas controladas (descida de 3–5s) + dead hang (suspensão passiva) + remada com elástico</li>
+          <li><strong>Fase 2 (construção):</strong> pull-ups assistidos com elástico grosso, buscando a 1ª repetição livre</li>
+          <li><strong>Fase 3 (intensificação):</strong> elástico mais fino, buscando 2 repetições livres seguidas</li>
+          <li><strong>Fase 4 (simulados):</strong> tentativas reais sem assistência, simulando as condições do teste</li>
+          <li><strong>Fase 5 (reta final):</strong> manutenção leve, sem buscar recorde pessoal</li>
+        </ol>
+      </div>
+      <div class="routine-card">
+        <h3>🏃 Progressão da corrida (meta: 2.200m em 12min)</h3>
+        <ol>
+          <li><strong>Fase 1 (base):</strong> run-walk 1:1 (1min corrida / 1min caminhada), 20–25min</li>
+          <li><strong>Fase 2 (construção):</strong> corrida contínua progressiva + 1 treino intervalado leve/semana</li>
+          <li><strong>Fase 3 (intensificação):</strong> ritmo-alvo (~5:30/km) + teste cronometrado de 12min quinzenal</li>
+          <li><strong>Fase 4 (simulados):</strong> simulações completas do teste, ajuste fino de ritmo e largada</li>
+          <li><strong>Fase 5 (reta final):</strong> taper — volume reduzido em 40–50%, sem testes máximos na última semana</li>
+        </ol>
+        <p class="routine-tip">Natação e salto: você já passa nos mínimos — 1 sessão curta por semana (sábado) é suficiente pra manter a forma, sem tirar tempo do que precisa evoluir.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIDEO TRACKS (YOUTUBE) ============ -->
+  <section class="panel videos" aria-labelledby="videosTitle">
+    <h2 id="videosTitle"><span class="idx">ARSENAL</span> Trilha de vídeos — YouTube</h2>
+    <p class="section-hint">Zero orçamento, zero desculpa. Cada item já abre a busca pronta no YouTube numa aba nova.</p>
+    <div class="video-groups" id="videoGroups"></div>
+  </section>
+
+  <!-- ============ RULES ============ -->
+  <section class="panel rules" aria-labelledby="rulesTitle">
+    <h2 id="rulesTitle"><span class="idx">REGRAS</span> Regras de ouro (buffs permanentes)</h2>
+    <ul class="rules-list" id="rulesList"></ul>
+  </section>
+
+  <!-- ============ TOOLKIT ============ -->
+  <section class="panel toolkit" aria-labelledby="toolkitTitle">
+    <h2 id="toolkitTitle"><span class="idx">INVENTÁRIO</span> Kit de estudo</h2>
+    <ul class="toolkit-list" id="toolkitList"></ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Progresso salvo automaticamente neste navegador (localStorage) e sincronizado na nuvem via Firebase.</p>
+  <p class="site-footer-sub">Baseado no edital de abertura do concurso PCPE 2026/2027 — Cargo 1, Agente de Polícia.</p>
+</footer>
+
+<!-- ============ QUEST PANEL (drawer) ============ -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="quest-drawer" id="questDrawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <span class="drawer-eyebrow" id="drawerEyebrow">FASE 1</span>
+      <h2 id="drawerTitle">Título da fase</h2>
+      <span class="drawer-dates" id="drawerDates">05/10–15/11</span>
+    </div>
+    <button class="drawer-close" id="drawerClose" aria-label="Fechar painel de missão">✕</button>
+  </div>
+  <div class="drawer-meta">
+    <span class="chip" id="drawerProportion">teoria/questões</span>
+    <span class="drawer-progress-text"><strong id="drawerProgressCount">0/0</strong> concluídas</span>
+  </div>
+  <div class="mini-bar drawer-progress-bar"><div class="mini-fill" id="drawerProgressFill"></div></div>
+  <p class="drawer-focus" id="drawerFocus"></p>
+  <ul class="quest-list" id="drawerTasks"></ul>
+</aside>
+
+<div class="toast" id="xpToast" aria-live="polite"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
