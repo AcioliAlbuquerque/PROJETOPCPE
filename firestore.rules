@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// Cada pessoa só lê e grava os próprios dados (o id do documento = uid da conta).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /pcpe_progress/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /pcpe_lab/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /pcpe_cards/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Todo o resto fica bloqueado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
