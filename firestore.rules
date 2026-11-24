@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Cada pessoa só lê e grava os próprios dados (o id do documento = uid da conta).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /pcpe_progress/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /pcpe_lab/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /pcpe_cards/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Biblioteca e perfil/programa de cada concurso do usuário.
+    match /contest_registry/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /contest_profiles/{uid}/items/{contestId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Progresso isolado por concurso; o PCPE legado continua nos documentos acima.
+    match /contest_progress/{uid}/items/{contestId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /contest_lab/{uid}/items/{contestId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /contest_cards/{uid}/items/{contestId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Todo o resto fica bloqueado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
