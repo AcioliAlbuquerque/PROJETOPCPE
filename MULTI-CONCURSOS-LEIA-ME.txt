@@ -1,0 +1,15 @@
+BIBLIOTECA DE CONCURSOS — LEIA ANTES DE PUBLICAR
+
+1. Substitua os arquivos atuais pelos arquivos deste pacote, mantendo as pastas css e js e o arquivo firebase-config.js.
+2. No Firebase Console > Firestore Database > Regras, publique o conteúdo de firestore.rules que acompanha o pacote. Isso libera a biblioteca e os documentos separados de cada concurso, sempre limitados ao UID autenticado.
+3. Faça login. A primeira tela será a biblioteca; o perfil PCPE aparece automaticamente e preserva os documentos antigos pcpe_progress, pcpe_lab e pcpe_cards.
+4. Para cadastrar um concurso, informe nome, cargo pretendido, data da prova, horas por dia, questões e se haverá discursiva. O identificador do cargo é opcional e ajuda quando o edital lista várias funções.
+5. Cadastre manualmente cada disciplina e assunto, escolhendo prioridade alta ou média e o tempo estimado. É possível adicionar e remover assuntos antes de salvar o concurso.
+6. No Calendário, você também pode acrescentar assuntos ao banco do concurso ativo, filtrar por prioridade, arrastar para uma data ou agendar pelo seletor. O ciclo coloca prioridades altas primeiro e depois as médias, se couber no prazo. De segunda a sexta há teoria e questões; sábado tem simulado; domingo tem redação ou revisão conforme a resposta sobre prova discursiva. Depois do ciclo, seguem missões de questões até a véspera.
+7. O X da biblioteca remove o concurso da lista com confirmação. Para também apagar os dados na nuvem e sincronizar a remoção em outros aparelhos, publique primeiro as regras atuais de firestore.rules. Se as regras antigas bloquearem a nuvem, a remoção fica salva neste navegador e não reaparece ao recarregar.
+
+O PDF bruto é processado no navegador e não é enviado nem armazenado. A nuvem guarda os parâmetros do concurso e o programa extraído, além de progresso, horas, flashcards e calendário separados por concurso. O perfil PCPE continua usando os documentos existentes para preservar seu progresso atual até você excluí-lo.
+
+O sistema não lê nem envia editais. O conteúdo é informado manualmente pelo usuário e sincronizado junto ao perfil do concurso.
+
+Para abrir o projeto no VS Code com Firebase e os módulos ES funcionando, sirva a pasta por um servidor local HTTP.
